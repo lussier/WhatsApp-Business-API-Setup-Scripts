@@ -10,6 +10,8 @@ volumes:
     driver: local
   mysqlData:
     driver: local
+  mysqlLogs:
+    driver: local
 
 services:
   db:
@@ -25,7 +27,9 @@ services:
         - "33060:3306"
     volumes:
      - mysqlData:/var/lib/mysql
+     - mysqlLogs:/var/log/mysql
     network_mode: bridge
+    command: mysqld --general-log=1 --general-log-file=/var/log/mysql/general-log.log
   wacore:
     image: docker.whatsapp.biz/coreapp:v${WA_API_VERSION:?Run docker-compose with env var WA_API_VERSION (ex. WA_API_VERSION=2.33.3 docker-compose <command> <options>)}
     command: ["/opt/whatsapp/bin/wait_on_mysql.sh", "/opt/whatsapp/bin/launch_within_docker.sh"]
